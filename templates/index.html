@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire de Connexion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+    <style>
+        body {
+            position: absolute;
+            background: url('/static/images/logIn.jpg'), linear-gradient(45deg, #1c2fd940, #2d38b71f);
+            background-blend-mode: overlay;
+            background-size: cover;
+            color: white;
+            backdrop-filter: blur(8px);
+            top: 0;
+            left: 0;
+            margin: 0;
+            width: 100vw;
+        }
+
+        div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100%;
+        }
+        .wrap-login100 {
+           
+            width: 800px;
+            height: 550px;
+            position: absolute;
+            justify-self: center;
+            align-items :center;
+            
+            
+        }
+
+        form {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .login100-form-logo {
+            font-size: 60px;
+            color: transparent;
+            display: flex;
+            position: absolute;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: transparent;
+            margin: 0px auto 400px; 
+        }
+
+        .login100-form-logo img {
+            border-radius: 60%;
+            width: 100%;
+            height: 100%;
+        }
+
+        .input {
+            font-family: Poppins-Regular;
+            font-size: 16px;
+            color: #fff;
+            line-height: 1.2;
+            display: block;
+            width: 100%;
+            height: 45px;
+            background: transparent;
+            padding: 0 5px 0 38px;
+            border: none;
+            border-bottom: 2px solid rgba(255,255,255,0.24); 
+            margin-bottom: 30px;
+            }
+
+            .input:focus + #icon-log,
+.input:focus + #icon-password {
+    margin-top: -70px;
+    transition: margin-top 0.3s ease;
+}
+
+
+            
+
+            .input:focus::placeholder {
+            opacity: 1;
+            }
+
+            i{
+                position: absolute;
+                margin-left: -110px;
+                transform: translateY(-50%);
+                color: #fff;            }
+            #icon-log {
+                margin-top: -70px;
+            }
+
+            #icon-password {
+                margin-top: 25px; 
+            }
+
+            
+            input[type="submit"],
+            input[type="reset"],
+            input[name="ajout_compte"] {
+                font-family: Poppins-Regular;
+                font-size: 16px;
+                color: #fff;
+                background-color: #081e83; 
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-right: 10px; 
+                width: 90px;
+
+            }
+
+            input[type="reset"] {
+
+                background-color: #8d160d6b; 
+            }
+
+            input[name="ajout_compte"] {
+                position:absolute;
+                width: 200px;
+                background-color: transparent;
+                margin-top: 50px;
+                margin-left: -205px; 
+
+            }
+           #result-message{
+            width: 200px;
+             position:relative;
+             margin-left:  650px;
+           }
+
+      
+
+
+
+    </style>
+</head>
+<body>
+    <div >
+
+        <div class="wrap-login100">
+                <img style = "position: fixed;top:0px;left:0px;width: 150px;height:90px" src="{{ url_for('static', filename='images/logo-black.png') }}" alt="Logo">
+    
+          <div class="login100-form-logo">
+            <img class="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+        </div>
+
+
+        <form method="post" action="{{ url_for('login') }}" onsubmit="return validateForm()">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input class="input" type="text" name="identifiant" id="email" placeholder="{{ identifiant if identifiant else 'identifiant' }}"><br>
+                
+                <i id="icon-log" class="fas fa-user"></i>
+                
+                <i  id="icon-password" class="fas fa-lock"></i>
+
+                <input class="input" type="password" name="mot_de_passe" id="password" placeholder="{{ mot_de_passe if mot_de_passe else 'mot_de_passe' }}"><br>
+
+                <input type="submit" value="Valider">
+                <input type="reset" value="Reset">
+                <input type="submit" name="ajout_compte" value="Ajout Compte">
+            </form>
+        </div>
+
+        <div id="result-message" style="color: white">{{ error_message }}{{ success_message }}</div>
+    </div>
+
+    <script>
+            function validateForm() {
+                var emailInput = document.getElementById('email');
+                var passwordInput = document.getElementById('password');
+                var errorMessage = document.getElementById('result-message');
+
+                var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+                if (!emailPattern.test(emailInput.value)) {
+                    errorMessage.innerHTML = "Veuillez entrer une adresse email valide (format : example@gmail.com)";
+                    return false; 
+                } else if (passwordInput.value.trim() === '') {
+                    errorMessage.innerHTML = "Veuillez entrer un mot de passe";
+                    return false;
+                } else if (!isPasswordStrong(passwordInput.value)) {
+                    errorMessage.innerHTML = "Le mot de passe n'est pas assez fort. Il doit contenir au moins 8 caractères, dont des majuscules, des minuscules, des chiffres et des symboles.";
+                    return false;
+                } else {
+                    errorMessage.innerHTML = "";
+                    return true; 
+                }
+            }
+
+            function isPasswordStrong(password) {
+                return password.length >= 8 &&
+                    /[A-Z]/.test(password) &&  // au moins une majuscule
+                    /[a-z]/.test(password) &&  // au moins une minuscule
+                    /[0-9]/.test(password) &&  // au moins un chiffre
+                    /[^A-Za-z0-9]/.test(password); // au moins un symbole
+            }
+
+    </script>
+</body>
+</html>
