@@ -1,5 +1,5 @@
 
-This  project implements a simple authentication system with user login and account creation features. Users can register accounts and log in to access protected routes.
+This  project implements a simple authentication forum with user login and account creation features. Users can register accounts and log in to access protected routes.
 
 ## Features
 
